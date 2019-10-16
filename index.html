@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Filipe Fernandes">
+  <title>Como montar um “App” de clima/tempo com Python e dados abertos</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reset.css">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    background-color: #2a211c;
+    color: #bdae9d;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #bdae9d;  padding-left: 4px; }
+div.sourceCode
+  { color: #bdae9d; background-color: #2a211c; }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffff00; } /* Alert */
+code span.an { color: #0066ff; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #44aa43; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #43a8ed; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #049b0a; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #0066ff; font-weight: bold; font-style: italic; } /* Comment */
+code span.do { color: #0066ff; font-style: italic; } /* Documentation */
+code span.dt { text-decoration: underline; } /* DataType */
+code span.dv { color: #44aa43; } /* DecVal */
+code span.er { color: #ffff00; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #44aa43; } /* Float */
+code span.fu { color: #ff9358; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #0066ff; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #43a8ed; font-weight: bold; } /* Keyword */
+code span.op { } /* Operator */
+code span.pp { font-weight: bold; } /* Preprocessor */
+code span.sc { color: #049b0a; } /* SpecialChar */
+code span.ss { color: #049b0a; } /* SpecialString */
+code span.st { color: #049b0a; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #049b0a; } /* VerbatimString */
+code span.wa { color: #ffff00; font-weight: bold; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+  <link rel="stylesheet" href="slides.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Como montar um “App” de clima/tempo com Python e dados abertos</h1>
+  <p class="author">Filipe Fernandes</p>
+  <p class="date">Out 27, 2019</p>
+</section>
+
+<section id="whoami" class="slide level1">
+<h1><code>whoami</code></h1>
+<p>Filipe Fernandes</p>
+<ul>
+<li class="fragment">Oceanógrafo Físico</li>
+<li class="fragment">Encanador de Dados</li>
+<li class="fragment">Faxineiro de Código</li>
+<li class="fragment">Babá de Test Integrado Contínuo</li>
+<li class="fragment">Apertador do “botão verde” no conda-forge</li>
+</ul>
+</section>
+<section id="outras-versões-dessa-palestra-padrões" class="slide level1">
+<h1>Outras versões dessa palestra: padrões</h1>
+<iframe width="700" height="500" src="https://www.youtube.com/embed/BV30Sk1CrM0?start=1771" frameborder="0" allow="encrypted-media" allowfullscreen>
+</iframe>
+<p><a href="https://www.youtube.com/watch?v=BV30Sk1CrM0">https://www.youtube.com/watch?v=BV30Sk1CrM0</a></p>
+</section>
+<section id="outras-versões-dessa-palestra-interoperabilidade-de-dadosmodelos" class="slide level1">
+<h1>Outras versões dessa palestra: Interoperabilidade de Dados/Modelos</h1>
+<iframe width="700" height="500" src="https://www.youtube.com/embed/WHjU_rg81BI?start=1771" frameborder="0" allow="encrypted-media" allowfullscreen>
+</iframe>
+<p><a href="https://www.youtube.com/watch?v=WHjU_rg81BI">https://www.youtube.com/watch?v=WHjU_rg81BI</a></p>
+</section>
+<section id="ioos" class="slide level1">
+<h1>IOOS</h1>
+<p><img data-src="images/IOOS-RAs.jpg" /></p>
+</section>
+<section id="ioos-em-números" class="slide level1">
+<h1>IOOS em números</h1>
+<p><img data-src="images/ioos_by_the_numbers_graphic2_feb2017-2.png" /></p>
+</section>
+<section id="galeria-de-código" class="slide level1">
+<h1>Galeria de Código</h1>
+<p><img src="images/code-gallery.png" height=450></p>
+<p><a href="https://ioos.github.io/notebooks_demos/code_gallery">https://ioos.github.io/notebooks_demos/code_gallery</a></p>
+</section>
+<section id="falei-de-padrões-né" class="slide level1">
+<h1>Falei de padrões né!?</h1>
+<p>
+<img src="images/OGC_Logo_2D_Blue_x_0_0.png" height=100 style="background-color:white"> <img src="images/iso-logo-print.gif" height=100> <img src="images/unidata-logo.png" height=100 style="background-color:white">
+</p>
+<ul>
+<li class="fragment">evite soluções específicas</li>
+<li class="fragment">os padrões devem ser aplicados nos provedores de dados</li>
+</ul>
+<div class="fragment">
+<p><img src="images/standards.svg" height=250 style="background-color:white"></p>
+</div>
+</section>
+<section id="serviços-web-do-ioos" class="slide level1">
+<h1>Serviços Web do IOOS</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Tipo de Dados</th>
+<th>Serviço Web</th>
+<th>Resposta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Dados <em>in-situ</em><br>(bóias, estações, etc)</td>
+<td>OGC SOS</td>
+<td>XML/CSV</td>
+</tr>
+<tr class="even">
+<td>Dados em grade (modelos, satélite)</td>
+<td>OPeNDAP</td>
+<td>Binary</td>
+</tr>
+<tr class="odd">
+<td>Images <em>raster</em></td>
+<td>OGC WMS</td>
+<td>GeoTIFF/PNG</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><code>ERDDAP</code> está emergindo como um novo padrão da comunidade.</p>
+</div>
+</section>
+<section id="sensor-observation-service-sos" class="slide level1">
+<h1>Sensor Observation Service (SOS)</h1>
+<p>(OGC SOS)</p>
+<ul>
+<li class="fragment"><code>GetCapabilities</code>: metadados</li>
+<li class="fragment"><code>DescribeSensor</code>: informação detalhada dos instrumentos</li>
+<li class="fragment"><code>GetObservation</code>: os dados</li>
+</ul>
+</section>
+<section id="sos-example" class="slide level1">
+<h1>SOS example</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a>url <span class="op">=</span> (</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    <span class="st">&quot;https://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS?&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>    <span class="st">&quot;service=SOS&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>    <span class="st">&quot;&amp;request=GetObservation&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>    <span class="st">&quot;&amp;version=1.0.0&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>    <span class="st">&quot;&amp;observedProperty=water_surface_height_above_reference&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>    <span class="st">&quot;&amp;offering=urn:ioos:station:NOAA.NOS.CO-OPS:8454000&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>    <span class="st">&quot;&amp;responseFormat=text/csv&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="st">&quot;&amp;eventTime=2018-07-04T00:00:00Z/2018-07-05T00:00:00Z&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>    <span class="st">&quot;&amp;result=VerticalDatum==urn:ogc:def:datum:epsg::5103&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="st">&quot;&amp;dataType=PreliminarySixMinute&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>)</span></code></pre></div>
+</section>
+<section id="com-uma-pytada-de-python" class="slide level1">
+<h1>Com uma Pytada de Python</h1>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>url <span class="op">=</span> (</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="ss">f&quot;https://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS?&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="ss">f&quot;service=SOS&amp;request=</span><span class="sc">{</span>request<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="ss">f&quot;&amp;version=</span><span class="sc">{</span>version<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="ss">f&quot;&amp;observedProperty=</span><span class="sc">{</span>variable<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>    <span class="ss">f&quot;&amp;offering=urn:ioos:station:NOAA.NOS.CO-OPS:8454000&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>    <span class="ss">f&quot;&amp;responseFormat=</span><span class="sc">{</span>response<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>    <span class="ss">f&quot;&amp;eventTime=</span><span class="sc">{</span>yesterday<span class="sc">:</span><span class="op">%</span><span class="sc">Y</span><span class="op">-%</span><span class="sc">m</span><span class="op">-%</span><span class="sc">dT</span><span class="op">%</span><span class="sc">H:</span><span class="op">%</span><span class="sc">M:</span><span class="op">%</span><span class="sc">SZ}</span><span class="ss">/&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>    <span class="ss">f&quot;</span><span class="sc">{</span>today<span class="sc">:</span><span class="op">%</span><span class="sc">Y</span><span class="op">-%</span><span class="sc">m</span><span class="op">-%</span><span class="sc">dT</span><span class="op">%</span><span class="sc">H:</span><span class="op">%</span><span class="sc">M:</span><span class="op">%</span><span class="sc">SZ}</span><span class="ss">&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>    <span class="ss">f&quot;&amp;result=VerticalDatum==</span><span class="sc">{</span>vdatum<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="ss">f&quot;&amp;dataType=</span><span class="sc">{</span>data_type<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>)</span></code></pre></div>
+<div class="fragment">
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/00-SOS.ipynb"> <img src="images/jupyterhub.svg" height=75 style="background-color:white"> </a></p>
+</div>
+</section>
+<section id="opendapclimate-and-forecast" class="slide level1">
+<h1>OPeNDAP/Climate and Forecast</h1>
+<p>(CF)</p>
+<iframe src="https://cfconventions.org/" width="750px" height="450px">
+</iframe>
+</section>
+<section id="metadados-cf" class="slide level1">
+<h1>Metadados CF</h1>
+<div class="sourceCode" id="cb3"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb3-1"><a href="#cb3-1"></a>float temp(ocean_time, s_rho, eta_rho, xi_rho);</span>
+<span id="cb3-2"><a href="#cb3-2"></a>    temp:standard_name = &quot;sea_water_potential_temperature&quot;</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    temp:units = &quot;Celsius&quot;;</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    temp:coordinates = &quot;lon_rho lat_rho s_rho ocean_time&quot;;</span>
+<span id="cb3-5"><a href="#cb3-5"></a>double s_rho(s_rho);</span>
+<span id="cb3-6"><a href="#cb3-6"></a>    s_rho:long_name = &quot;S-coordinate at RHO-points&quot;;</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    s_rho:positive = &quot;up&quot;;</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    s_rho:standard_name = &quot;ocean_s_coordinate_g1&quot;;</span>
+<span id="cb3-9"><a href="#cb3-9"></a>    s_rho:formula_terms = &quot;s:s_rho C:Cs_r eta:zeta depth:h</span>
+<span id="cb3-10"><a href="#cb3-10"></a>                           depth_c:hc&quot;</span></code></pre></div>
+<div class="fragment">
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/01-ClimateForecast.ipynb"> <img src="images/jupyterhub.svg" height=75 style="background-color:white"> </a></p>
+</div>
+</section>
+<section id="web-mapping-service" class="slide level1">
+<h1>Web Mapping Service</h1>
+<p>(OGC WMS)</p>
+<ul>
+<li class="fragment">Interface HTTP simples para requerer images geo-referenciadas sobre um mapa</li>
+<li class="fragment">Um pedido WMS define uma camada geográfica e uma área de interesse a ser processada</li>
+<li class="fragment">A reposta ao pedido é um ou mais mapas images geo-referênciadas (retornadas como JPEG ou PNG)</li>
+</ul>
+<div class="fragment">
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/02-WMS.ipynb"> <img src="images/jupyterhub.svg" height=75 style="background-color:white"> </a></p>
+</div>
+</section>
+<section id="erddap" class="slide level1">
+<h1>ERDDAP</h1>
+<p>O servidor de dados que a comunidade pedia</p>
+<ul>
+<li class="fragment">Retornos flexíveis: <code>.html</code> table, ESRI <code>.asc</code> and <code>.csv</code>, Google Earth <code>.kml</code>, OPeNDAP binary, <code>.mat</code>, <code>.nc</code>, ODV <code>.txt</code>, <code>.csv</code>, <code>.tsv</code>, <code>.json</code>, and <code>.xhtml</code></li>
+<li class="fragment">RESTful API “de graça” para acessar os dados</li>
+<li class="fragment">Padroniza as datas e tempo em buscas e retornos</li>
+<li class="fragment">Redução de dados “no servidor”</li>
+</ul>
+<div class="fragment">
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/03-ERDDAP.ipynb"> <img src="images/jupyterhub.svg" height=75 style="background-color:white"> </a></p>
+</div>
+</section>
+<section id="existem-muitas-partes-móveis" class="slide level1">
+<h1>Existem muitas partes móveis</h1>
+<p><img data-src="images/grind_gears.gif" /></p>
+</section>
+<section id="catalog-service-for-the-web" class="slide level1">
+<h1>Catalog Service for the Web</h1>
+<p>(CSW)</p>
+<ul>
+<li class="fragment">Uma fonte única para encontrar os <em>endpoints</em></li>
+<li class="fragment">Tem interface Python:<br><code>owslib.csw.CatalogueServiceWeb</code></li>
+<li class="fragment">Permite filtros avançados:<br><code>owslib.fes</code></li>
+</ul>
+<div class="fragment">
+<p><img src="images/one_ring.jpg" height=75 style="background-color:white"></p>
+</div>
+</section>
+<section id="como-ele-é-alimentado" class="slide level1">
+<h1>Como ele é alimentado</h1>
+<p><img src="images/IOOS.svg" height=550 style="background-color:white"></p>
+</section>
+<section id="procurando-os-serviços-web" class="slide level1">
+<h1>Procurando os serviços web</h1>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">from</span> geolinks <span class="im">import</span> sniff_link</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="op">&gt;&gt;&gt;</span> sniff_link(<span class="st">&quot;https://host/wms?service=SOS&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co">&#39;OGC:SOS&#39;</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="op">&gt;&gt;&gt;</span> sniff_link(<span class="st">&quot;https://host/wms?service=OPeNDAP:OPeNDAP&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co">&#39;OPeNDAP:OPeNDAP&#39;</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="op">&gt;&gt;&gt;</span> sniff_link(<span class="st">&quot;https://host/wms?service=WMS&quot;</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">&#39;OGC:WMS&#39;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="op">&gt;&gt;&gt;</span> sniff_link(<span class="st">&quot;https://host/data/roads.kmz&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">&#39;OGC:KML&#39;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="op">&gt;&gt;&gt;</span> sniff_link(<span class="st">&quot;https://host/data/roads.kml&quot;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">&#39;OGC:KML&#39;</span></span></code></pre></div>
+<div class="fragment">
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/04-CSW.ipynb"> <img src="images/jupyterhub.svg" height=75 style="background-color:white"> </a></p>
+</div>
+</section>
+<section id="juntando-tudo-nhc" class="slide level1">
+<h1>Juntando Tudo: NHC</h1>
+<p>Encontrando estações meteorológicas no caminho de previsão de um furacão.</p>
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/2017-09-09-hurricane_irma.ipynb"> <img src="images/hurricane-irma.png" height=150 style="background-color:white"> </a></p>
+</section>
+<section id="juntando-tudo-avaliando-performance-de-modelos" class="slide level1">
+<h1>Juntando Tudo: Avaliando Performance de Modelos</h1>
+<p>Checando modelos de altura de ondas</p>
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/2018-03-30-wave_height_assessment.ipynb"> <img src="images/wave-height.png" height=110 style="background-color:white"> </a></p>
+</section>
+<section id="juntando-tudo-erddap-app" class="slide level1">
+<h1>Juntando Tudo: ERDDAP App</h1>
+<p>Finalmente o notebook que prometi no título!</p>
+<p><a href="https://mybinder.org/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages?filepath=notebooks/ERDDAP_timeseries_explorer-IOOS.ipynb"> <img src="images/erddap_app.png" height=400 style="background-color:white"> </a></p>
+</section>
+<section id="portal-secoora" class="slide level1">
+<h1>Portal SECOORA</h1>
+<iframe width="700" height="500" src="https://portal.secoora.org">
+</iframe>
+</section>
+<section id="sumário" class="slide level1">
+<h1>Sumário</h1>
+<ul>
+<li class="fragment">Padrões, serviços web e catálogos permitem servir dados de forma “unificada”</li>
+<li class="fragment">Python é talvez a única linguagem científica+web+dashboard+scripting que nos permite criar protótipos de visualização tão rapidamente unindo tantas tecnologias diferentes</li>
+<li class="fragment">Widgets nos permite democratizar a explorações dos dados</li>
+</ul>
+</section>
+<section id="perguntas" class="slide level1">
+<h1>Perguntas?</h1>
+<h4 id="ocefpaf">(<a href="(https://github.com/ocefpaf)">ocefpaf</a>)</h4>
+<p><img data-src="images/twitter-github.png" /></p>
+<p><a href="https://ocefpaf.github.io/2019-10-27-PyBr-talk">https://ocefpaf.github.io/2019-10-27-PyBr-talk</a></p>
+<p><a href="https://binder.pangeo.io/v2/gh/ocefpaf/2019-10-27-PyBr-talk/gh-pages"><img data-src="https://img.shields.io/badge/pangeo-binder-2F7651.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAABZCAMAAABi1XidAAAB8lBMVEX///9XmsrmZYH1olJXmsr1olJXmsrmZYH1olJXmsr1olJXmsrmZYH1olL1olJXmsr1olJXmsrmZYH1olL1olJXmsrmZYH1olJXmsr1olL1olJXmsrmZYH1olL1olJXmsrmZYH1olL1olL0nFf1olJXmsrmZYH1olJXmsq8dZb1olJXmsrmZYH1olJXmspXmspXmsr1olL1olJXmsrmZYH1olJXmsr1olL1olJXmsrmZYH1olL1olLeaIVXmsrmZYH1olL1olL1olJXmsrmZYH1olLna31Xmsr1olJXmsr1olJXmsrmZYH1olLqoVr1olJXmsr1olJXmsrmZYH1olL1olKkfaPobXvviGabgadXmsqThKuofKHmZ4Dobnr1olJXmsr1olJXmspXmsr1olJXmsrfZ4TuhWn1olL1olJXmsqBi7X1olJXmspZmslbmMhbmsdemsVfl8ZgmsNim8Jpk8F0m7R4m7F5nLB6jbh7jbiDirOEibOGnKaMhq+PnaCVg6qWg6qegKaff6WhnpKofKGtnomxeZy3noG6dZi+n3vCcpPDcpPGn3bLb4/Mb47UbIrVa4rYoGjdaIbeaIXhoWHmZYHobXvpcHjqdHXreHLroVrsfG/uhGnuh2bwj2Hxk17yl1vzmljzm1j0nlX1olL3AJXWAAAAbXRSTlMAEBAQHx8gICAuLjAwMDw9PUBAQEpQUFBXV1hgYGBkcHBwcXl8gICAgoiIkJCQlJicnJ2goKCmqK+wsLC4usDAwMjP0NDQ1NbW3Nzg4ODi5+3v8PDw8/T09PX29vb39/f5+fr7+/z8/Pz9/v7+zczCxgAABC5JREFUeAHN1ul3k0UUBvCb1CTVpmpaitAGSLSpSuKCLWpbTKNJFGlcSMAFF63iUmRccNG6gLbuxkXU66JAUef/9LSpmXnyLr3T5AO/rzl5zj137p136BISy44fKJXuGN/d19PUfYeO67Znqtf2KH33Id1psXoFdW30sPZ1sMvs2D060AHqws4FHeJojLZqnw53cmfvg+XR8mC0OEjuxrXEkX5ydeVJLVIlV0e10PXk5k7dYeHu7Cj1j+49uKg7uLU61tGLw1lq27ugQYlclHC4bgv7VQ+TAyj5Zc/UjsPvs1sd5cWryWObtvWT2EPa4rtnWW3JkpjggEpbOsPr7F7EyNewtpBIslA7p43HCsnwooXTEc3UmPmCNn5lrqTJxy6nRmcavGZVt/3Da2pD5NHvsOHJCrdc1G2r3DITpU7yic7w/7Rxnjc0kt5GC4djiv2Sz3Fb2iEZg41/ddsFDoyuYrIkmFehz0HR2thPgQqMyQYb2OtB0WxsZ3BeG3+wpRb1vzl2UYBog8FfGhttFKjtAclnZYrRo9ryG9uG/FZQU4AEg8ZE9LjGMzTmqKXPLnlWVnIlQQTvxJf8ip7VgjZjyVPrjw1te5otM7RmP7xm+sK2Gv9I8Gi++BRbEkR9EBw8zRUcKxwp73xkaLiqQb+kGduJTNHG72zcW9LoJgqQxpP3/Tj//c3yB0tqzaml05/+orHLksVO+95kX7/7qgJvnjlrfr2Ggsyx0eoy9uPzN5SPd86aXggOsEKW2Prz7du3VID3/tzs/sSRs2w7ovVHKtjrX2pd7ZMlTxAYfBAL9jiDwfLkq55Tm7ifhMlTGPyCAs7RFRhn47JnlcB9RM5T97ASuZXIcVNuUDIndpDbdsfrqsOppeXl5Y+XVKdjFCTh+zGaVuj0d9zy05PPK3QzBamxdwtTCrzyg/2Rvf2EstUjordGwa/kx9mSJLr8mLLtCW8HHGJc2R5hS219IiF6PnTusOqcMl57gm0Z8kanKMAQg0qSyuZfn7zItsbGyO9QlnxY0eCuD1XL2ys/MsrQhltE7Ug0uFOzufJFE2PxBo/YAx8XPPdDwWN0MrDRYIZF0mSMKCNHgaIVFoBbNoLJ7tEQDKxGF0kcLQimojCZopv0OkNOyWCCg9XMVAi7ARJzQdM2QUh0gmBozjc3Skg6dSBRqDGYSUOu66Zg+I2fNZs/M3/f/Grl/XnyF1Gw3VKCez0PN5IUfFLqvgUN4C0qNqYs5YhPL+aVZYDE4IpUk57oSFnJm4FyCqqOE0jhY2SMyLFoo56zyo6becOS5UVDdj7Vih0zp+tcMhwRpBeLyqtIjlJKAIZSbI8SGSF3k0pA3mR5tHuwPFoa7N7reoq2bqCsAk1HqCu5uvI1n6JuRXI+S1Mco54YmYTwcn6Aeic+kssXi8XpXC4V3t7/ADuTNKaQJdScAAAAAElFTkSuQmCC" alt="Pangeo Binder" /></a></p>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
