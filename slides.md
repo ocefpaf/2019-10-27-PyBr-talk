@@ -12,7 +12,7 @@ Filipe Fernandes
 >- Oceanógrafo Físico
 >- Encanador de Dados
 >- Faxineiro de Código
->- Babá de Test Integrado Contínuo
+>- Babá de Teste Integrado Contínuo
 >- Apertador do "botão verde" no conda-forge
 
 
