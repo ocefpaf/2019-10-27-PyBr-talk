@@ -75,7 +75,7 @@ Filipe Fernandes
 
 . . .
 
-`ERDDAP` está emergindo como um novo padrão da comunidade.
+`ERDDAP` está emergindo como o padrão da comunidade.
 
 # Sensor Observation Service (SOS)
 
