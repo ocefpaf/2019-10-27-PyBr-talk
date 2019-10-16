@@ -1,0 +1,33 @@
+name: PyBr19
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - appmode
+  - arrow
+  - bokeh
+  - bqplot
+  - cartopy
+  - erddapy
+  - folium
+  - geolinks
+  - geopandas
+  - ioos-tools
+  - ipyleaflet
+  - ipywidgets
+  - iris
+  - jupyter
+  - lxml
+  - matplotlib
+  - nbconvert
+  - netcdf4
+  - owslib
+  - pandas
+  - pandoc
+  - pendulum
+  - pyoos
+  - retrying
+  - rise
+  - shapely
+  - xlrd
