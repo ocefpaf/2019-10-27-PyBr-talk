@@ -75,7 +75,7 @@ Filipe Fernandes
 
 . . .
 
-`ERDDAP` está emergindo como o padrão da comunidade.
+`ERDDAP` "novo" padrão da comunidade.
 
 # Sensor Observation Service (SOS)
 
@@ -275,10 +275,9 @@ Finalmente o notebook que prometi no título!
 
 # Perguntas?
 
-#### ([ocefpaf]((https://github.com/ocefpaf)))
+#### (ocefpaf)
 
 ![](images/twitter-github.png)
-
 
 
 [https://ocefpaf.github.io/2019-10-27-PyBr-talk](https://ocefpaf.github.io/2019-10-27-PyBr-talk)
