@@ -131,7 +131,7 @@ url = (
 
 (CF)
 
-<iframe src="https://cfconventions.org/" width="750px" height="450px"></iframe>
+<iframe src="http://cfconventions.org/" width="750px" height="450px"></iframe>
 
 # Metadados CF
 
