@@ -16,6 +16,7 @@ Filipe Fernandes
 >- Apertador do "botão verde" no conda-forge
 
 
+
 # Outras versões dessa palestra: padrões
 
 <iframe width="700" height="500" src="https://www.youtube.com/embed/BV30Sk1CrM0?start=1771" frameborder="0" allow="encrypted-media" allowfullscreen></iframe>
@@ -61,6 +62,10 @@ Filipe Fernandes
 
 . . .
 
+**[F]indable [A]ccessible [I]nteroperable [R]eproducible**
+
+# Simplificando
+
 <img src="images/standards.svg" height=250 style="background-color:white">
 
 
@@ -69,7 +74,7 @@ Filipe Fernandes
 | Tipo de Dados                             | Serviço Web                       | Resposta     |
 |-------------------------------------------|-----------------------------------|--------------|
 | Dados *in-situ*<br>(bóias, estações, etc) | OGC SOS                           | XML/CSV      |
-| Dados em grade (modelos, satélite)        | OPeNDAP                           | Binary       |
+| Dados em grade (modelos, satélite)        | OPeNDAP                           | Binário       |
 | Images *raster*                           | OGC WMS                           | GeoTIFF/PNG  |
 
 
@@ -111,7 +116,7 @@ url = (
     f"service=SOS&request={request}"
     f"&version={version}"
     f"&observedProperty={variable}"
-    f"&offering=urn:ioos:station:NOAA.NOS.CO-OPS:8454000"
+    f"&offering={buoy}"
     f"&responseFormat={response}"
     f"&eventTime={yesterday:%Y-%m-%dT%H:%M:%SZ}/"
     f"{today:%Y-%m-%dT%H:%M:%SZ}"
